@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Novo Perfil",
+    "Projects": [
+      {
+        "Path": "MicroondasDigital.Api\\MicroondasDigital.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MicroondasDigital.Web\\MicroondasDigital.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

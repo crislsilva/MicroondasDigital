@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Aplicacao", "MicroondasDigital.Aplicacao\MicroondasDigital.Aplicacao.csproj", "{567373E4-4502-4D0A-8BFA-5BBF351D93C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Dominio", "MicroondasDigital.Dominio\MicroondasDigital.Dominio.csproj", "{B6A6746D-59B4-47E4-A411-EFBC9A0837A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Testes", "MicroondasDigital.Testes\MicroondasDigital.Testes.csproj", "{9F96177B-0F0A-4B34-877B-CB5188DFB71E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Api", "MicroondasDigital.Api\MicroondasDigital.Api.csproj", "{7CDEF132-D55F-4D30-86FE-DD88EE682766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Web", "MicroondasDigital.Web\MicroondasDigital.Web.csproj", "{1FCD6035-67D1-419C-90E2-65AE4435F93F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{567373E4-4502-4D0A-8BFA-5BBF351D93C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567373E4-4502-4D0A-8BFA-5BBF351D93C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567373E4-4502-4D0A-8BFA-5BBF351D93C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567373E4-4502-4D0A-8BFA-5BBF351D93C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6A6746D-59B4-47E4-A411-EFBC9A0837A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6A6746D-59B4-47E4-A411-EFBC9A0837A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6A6746D-59B4-47E4-A411-EFBC9A0837A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6A6746D-59B4-47E4-A411-EFBC9A0837A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F96177B-0F0A-4B34-877B-CB5188DFB71E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F96177B-0F0A-4B34-877B-CB5188DFB71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F96177B-0F0A-4B34-877B-CB5188DFB71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F96177B-0F0A-4B34-877B-CB5188DFB71E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CDEF132-D55F-4D30-86FE-DD88EE682766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CDEF132-D55F-4D30-86FE-DD88EE682766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CDEF132-D55F-4D30-86FE-DD88EE682766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CDEF132-D55F-4D30-86FE-DD88EE682766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5B091B0A-0771-472B-AA22-6E425408191E}
+	EndGlobalSection
+EndGlobal
