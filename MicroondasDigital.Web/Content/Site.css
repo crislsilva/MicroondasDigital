@@ -18,3 +18,132 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/*micro-ondas*/
+.container {
+    text-align: center;
+    font-family: arial;
+}
+
+input {
+    margin: 5px;
+    padding: 8px;
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.display {
+    margin-top: 20px;
+    font-size: 24px;
+    background-color: black;
+    color: lime;
+    padding: 20px;
+    font-family: monospace;
+}
+
+.alert {
+    padding: 12px;
+    margin: 10px auto;
+    width: 400px;
+    border-radius: 6px;
+    font-weight: bold;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.teclado {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+    .teclado button {
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 8px;
+        background: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        .teclado button:hover {
+            background: #555;
+        }
+
+.ativo {
+    border: 2px solid #4CAF50;
+}
+
+.card-instrucoes {
+    margin: 20px auto;
+    width: 420px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0,15);
+    overflow: hidden;
+    font-family: arial;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.card-header {
+    background-color: #68c46c;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-body {
+    background-color: #97d099;
+    color: #333;
+    padding: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.hidden {
+    display: none;
+}
+
+.select-container {
+    margin: 15px auto;
+    width: 300px;
+    text-align: left;
+    position: relative;
+}
+
+    .select-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .select-container select {
+        width: 100%;
+        padding: 10px 40px 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #97d099;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

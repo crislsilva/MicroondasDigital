@@ -1,14 +1,15 @@
 ﻿@{
     ViewBag.Title = "Micro-ondas Digital";
 }
+<link rel="stylesheet" href="~/Content/Site.css" />
 
 <div class="container">
     <h1>Micro-ondas Digital</h1>
     <div id="mensagem" class="alert" style="display:none;"></div>
-    <label>Tempo em segundos (1 a 120)</label>    
+    <label>Tempo em segundos (1 a 120)</label>
     <input id="tempo" />
     <br />
-    <label>Potência (1 a 10)</label>    
+    <label>Potência (1 a 10)</label>
     <input id="potencia" />
 
     <div class="teclado">
@@ -29,6 +30,25 @@
         <button onclick="backspace()">←</button>
     </div>
 
+    @*combo para listar os programas pré-definidos*@
+    <div class="select-container">
+        <label for="programas">Programas pré-definidos</label>
+
+        <select id="programas" onchange="selecionarPrograma()">
+            <option value="">Selecione um programa</option>
+        </select>
+    </div>
+
+    <div id="cardInstrucoes" class="card-instrucoes hidden">
+        <div class="card-header">
+            <span>Instruções do Programa</span>
+        </div>
+
+        <div class="card-body">
+            <p id="textoInstrucoes"></p>
+        </div>
+    </div>
+
     <div class="buttons">
         <button onclick="iniciarContinuar()">Iniciar</button>
         <button onclick="pausarCancelar()">Pausar/Cancelar</button>
@@ -36,69 +56,6 @@
     <h2 id="tempoDisplay"></h2>
     <div id="display" class="display"></div>
 </div>
-
-<style>
-    .container {
-        text-align: center;
-        font-family: arial;
-    }
-
-    input {
-        margin: 5px;
-        padding: 8px;
-    }
-
-    button {
-        margin: 5px;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .display {
-        margin-top: 20px;
-        font-size: 24px;
-        background-color: black;
-        color: lime;
-        padding: 20px;
-        font-family: monospace;
-    }
-
-    .alert {
-        padding: 12px;
-        margin: 10px auto;
-        width: 400px;
-        border-radius: 6px;
-        font-weight: bold;
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .teclado {
-        display: grid;
-        grid-template-columns: repeat(3, 80px);
-        gap: 10px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-        .teclado button {
-            padding: 15px;
-            font-size: 16px;
-            border-radius: 8px;
-            background: #333;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-            .teclado button:hover {
-                background: #555;
-            }
-
-    .ativo {
-        border: 2px solid #4CAF50;
-    }
-</style>
 
 <script>
     const api_base = "https://localhost:44301";
@@ -114,13 +71,17 @@
 
     const inputTempo = document.getElementById("tempo");
     const inputPotencia = document.getElementById("potencia");
+    const cardInstrucoes = document.getElementById("cardInstrucoes");
+    const textoInstrucoes = document.getElementById("textoInstrucoes");
 
     inputTempo.addEventListener("focus", () => {
-        campoAtivo = "tempo"; atualizarBorda();
+        campoAtivo = "tempo";
+        atualizarBorda();
     });
 
     inputPotencia.addEventListener("focus", () => {
-        campoAtivo = "potencia"; atualizarBorda();
+        campoAtivo = "potencia";
+        atualizarBorda();
     });
 
     function atualizarBorda() {
@@ -141,26 +102,26 @@
         }, 3000);
     }
     function digitar(numero) {
-        if (campoAtivo === "tempo") {
+        if (campoAtivo === "tempo" && !inputTempo.disabled) {
             if (inputTempo.value.length >= 3) return;
             inputTempo.value += numero;
         }
 
-        if (campoAtivo === "potencia") {
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) {
             if (inputPotencia.value.length >= 2) return;
             inputPotencia.value += numero;
         }
     }
     function limpar() {
-        if (campoAtivo === "tempo") inputTempo.value = "";
-        if (campoAtivo === "potencia") inputPotencia.value = "";
+        if (campoAtivo === "tempo" && !inputTempo.disabled) inputTempo.value = "";
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) inputPotencia.value = "";
     }
 
     function backspace() {
-        if (campoAtivo === "tempo") {
+        if (campoAtivo === "tempo" && !inputPotencia.disabled) {
             inputTempo.value = inputTempo.value.slice(0, -1);
         }
-        if (campoAtivo === "potencia") {
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) {
             inputPotencia.value = inputPotencia.value.slice(0, -1);
         }
     }
@@ -181,10 +142,6 @@
             if (tempo) {
                 if (isNaN(parseInt(tempo))) {
                     mostrarMensagem("Informe somente números no campo tempo");
-                    return;
-                }
-                if (tempo < 1 || tempo > 120) {
-                    mostrarMensagem("O tempo de aquecimento deve estar entre 1 e 120 segundos");
                     return;
                 }
             }
@@ -217,7 +174,7 @@
                 iniciarProcesso();
             }
             else {
-                inputTempo.value = (parseInt(inputTempo.value) + 30).toString();
+                if (!inputTempo.disabled) inputTempo.value = (parseInt(inputTempo.value) + 30).toString();
             }
             emExecucao = true;
             pausado = false;
@@ -244,6 +201,7 @@
 
             document.getElementById("display").innerText = "";
             document.getElementById("tempoDisplay").innerText = "";
+            limparStatusCronometro();
         }
     }
 
@@ -253,6 +211,9 @@
     }
 
     function iniciarProcesso() {
+        //bloquear select para não permitir selecionar outro programa enquanto está em aquecimento
+        document.getElementById("programas").setAttribute("disabled", "disabled");
+
         if (interval) return;
 
         interval = setInterval(atualizarStatus, 1000);
@@ -261,10 +222,12 @@
     function pararProcesso() {
         clearInterval(interval);
         interval = null;
-        inputTempo.value = "";
-        inputPotencia.value = "";
         emExecucao = false;
         pausado = false;
+
+        resetarProgramaSelecionado();
+
+        inputTempo.focus();
     }
 
     async function atualizarStatus() {
@@ -275,11 +238,99 @@
             document.getElementById("display").innerText = data.status;
             document.getElementById("tempoDisplay").innerText = data.tempo;
 
-            if (data.status.includes("concluído")) pararProcesso();
+            if (data.status.includes("concluído") || data.status.length == 0) pararProcesso();
         }
         catch
         {
             pararProcesso();
         }
     }
+
+    async function carregarProgramas() {
+        try {
+            const res = await fetch(`${api_base}/api/microondas/programas`);
+            const data = await res.json();
+
+            const select = document.getElementById("programas");
+
+            data.forEach(p => {
+                const option = document.createElement("option");
+                option.value = p.Nome;
+                option.text = p.Nome;
+                select.appendChild(option);
+            });
+        }
+        catch
+        {
+            mostrarMensagem("Erro ao carregar programas");
+        }
+    }
+
+    async function selecionarPrograma() {
+        limparStatusCronometro();
+
+        const nome = document.getElementById("programas").value;
+
+        try {
+            const res = await fetch(`${api_base}/api/microondas/selecionar-programa?nome=${nome}`, {
+                method: "POST",
+            });
+
+            if (!nome) {
+                resetarProgramaSelecionado();
+
+                return;
+            }
+
+            if (!res.ok) {
+                const erro = await res.json();
+                mostrarMensagem(erro.Message || erro);
+                return;
+            }
+
+            const data = await res.json();
+            inputTempo.value = data.Tempo.toString();
+            inputPotencia.value = data.Potencia.toString();
+            textoInstrucoes.innerText = data.Instrucoes;
+            cardInstrucoes.classList.remove("hidden");
+
+            //bloquear inputs para evitar alterações manuais
+            inputTempo.disabled = true;
+            inputPotencia.disabled = true;
+        }
+        catch
+        {
+            mostrarMensagem("Erro ao selecionar programa");
+        }
+    }
+
+    function resetarProgramaSelecionado() {
+        const select = document.getElementById("programas");
+
+        //Limpar seleção do combo
+        select.value = "";
+        //Habilitar seleção do combo novamente
+        select.removeAttribute("disabled");
+
+        //Limpar instruções
+        cardInstrucoes.classList.add("hidden");
+        textoInstrucoes.innerText = "";
+
+        //Limpar inputs
+        inputTempo.value = "";
+        inputPotencia.value = "";
+
+        //Habilitar inputs novamente
+        inputTempo.disabled = false;
+        inputPotencia.disabled = false;
+    }
+
+    function limparStatusCronometro() {
+        document.getElementById("display").innerText = "";
+        document.getElementById("tempoDisplay").innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarProgramas();
+    });
 </script>

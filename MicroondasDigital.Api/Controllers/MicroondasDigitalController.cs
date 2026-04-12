@@ -9,14 +9,16 @@ namespace MicroondasDigital.Api.Controllers
     public class MicroondasDigitalController : ApiController
     {
         private readonly IAquecimentoService _aquecimentoService;
-        public MicroondasDigitalController(IAquecimentoService aquecimentoService)
+        private readonly IProgramaAquecimentoService _programaAquecimentoService;
+        public MicroondasDigitalController(IAquecimentoService aquecimentoService, IProgramaAquecimentoService programaAquecimentoService)
         {
             _aquecimentoService = aquecimentoService;
+            _programaAquecimentoService = programaAquecimentoService;
         }
 
         [HttpPost]
         [Route("iniciar")]
-        public IHttpActionResult Iniciar([FromBody] RequisicaoAquecimento request)
+        public IHttpActionResult Iniciar([FromBody] AquecimentoRequest request)
         {
             try
             {
@@ -61,6 +63,29 @@ namespace MicroondasDigital.Api.Controllers
                 status
 
             });
+        }
+
+        [HttpGet]
+        [Route("programas")]
+        public IHttpActionResult ObterProgramas()
+        {
+            var programas = _programaAquecimentoService.ObterTodos();
+            return Ok(programas);
+        }
+
+        [HttpPost]
+        [Route("selecionar-programa")]
+        public IHttpActionResult SelecionarPrograma([FromUri] string nome)
+        {
+            try
+            {
+                var resultado =_aquecimentoService.SelecionarPrograma(nome);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

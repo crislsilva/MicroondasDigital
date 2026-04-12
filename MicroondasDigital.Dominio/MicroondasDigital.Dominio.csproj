@@ -43,7 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entidades\Aquecimento.cs" />
+    <Compile Include="Entidades\ProgramaAquecimento.cs" />
+    <Compile Include="Interfaces\IProgramaAquecimento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\CarneStrategy.cs" />
+    <Compile Include="Strategies\FeijaoStrategy.cs" />
+    <Compile Include="Strategies\FrangoStrategy.cs" />
+    <Compile Include="Strategies\LeiteStrategy.cs" />
+    <Compile Include="Strategies\PipocaStrategy.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

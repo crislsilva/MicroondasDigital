@@ -1,4 +1,6 @@
-﻿namespace MicroondasDigital.Aplicacao.Interfaces
+﻿using MicroondasDigital.Aplicacao.DTO;
+
+namespace MicroondasDigital.Aplicacao.Interfaces
 {
     public interface IAquecimentoService
     {
@@ -7,5 +9,6 @@
         void Continuar();
         string TimerTick();
         string ObterTempoFormatado();
+        ProgramaSelecionadoDto SelecionarPrograma(string nomePrograma);
     }
 }

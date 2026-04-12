@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using MicroondasDigital.Aplicacao.DTO;
 using MicroondasDigital.Aplicacao.Interfaces;
 using MicroondasDigital.Dominio.Entidades;
 
@@ -10,20 +11,40 @@ namespace MicroondasDigital.Aplicacao.Services
         private int _potencia;
         private bool _estaAquecendo;
         private bool _estaPausado;
+        private bool _programaPreDefinido = false;
+        private string _caractere = ".";
+
         private readonly StringBuilder _status = new StringBuilder();
+        private readonly IProgramaAquecimentoService _programaAquecimentoService;
+
+        public AquecimentoService(IProgramaAquecimentoService programaAquecimentoService)
+        {
+            _programaAquecimentoService = programaAquecimentoService;
+        }
+
+        public AquecimentoService()
+        {
+        }
 
         #region Métodos Públicos
         public void Iniciar(int? tempoSegundos, int? potencia)
         {
+            //Bloquear incremento de tempo quando é programa pré-definido (e está aquecendo)
+            if (_programaPreDefinido && _estaAquecendo)
+                return;
+
             if (!_estaAquecendo && !_estaPausado)
             {
-                Reset();
                 var aquecimento = new Aquecimento(tempoSegundos ?? 30, potencia ?? 10);
                 
                 _tempoRestante = aquecimento.Tempo;
                 _potencia = aquecimento.Potencia;
                 _estaAquecendo = true;
                 _estaPausado = false;
+                _status.Clear();
+
+                if (!_programaPreDefinido)
+                    _caractere = ".";
             }
             else
             {
@@ -55,7 +76,7 @@ namespace MicroondasDigital.Aplicacao.Services
             }
             else
             {
-                Reset();
+                ResetarParametrosAquecimento(true);
                 return "cancelado";
             }
         }
@@ -69,12 +90,13 @@ namespace MicroondasDigital.Aplicacao.Services
             {
                 _estaAquecendo = false;
                 _status.Append("Aquecimento concluído");
+                ResetarParametrosAquecimento(false);
                 return _status.ToString();
             }
 
             for (int i = 0; i < _potencia; i++)
             {
-                _status.Append(".");
+                _status.Append(_caractere);
             }
 
             _status.Append(" ");
@@ -82,16 +104,45 @@ namespace MicroondasDigital.Aplicacao.Services
 
             return _status.ToString();
         }
+
+        public ProgramaSelecionadoDto SelecionarPrograma(string nome)
+        {
+            ResetarParametrosAquecimento(true);
+
+            if (string.IsNullOrEmpty(nome)) {
+                return null;
+            }
+
+            var programa = _programaAquecimentoService.ObterPorNome(nome);
+
+            _tempoRestante = programa.Tempo;
+            _potencia = programa.Potencia;
+            _programaPreDefinido = true;
+            _caractere = programa.CaractereAquecimento;
+
+            return new ProgramaSelecionadoDto 
+            {
+                Nome = programa.Nome,
+                Tempo = programa.Tempo,
+                Potencia = programa.Potencia,                
+                Caractere = programa.CaractereAquecimento,
+                Instrucoes = programa.Instrucoes
+            };
+        }
         #endregion
 
         #region Métodos Privados
-        private void Reset()
+        private void ResetarParametrosAquecimento(bool limparStatus)
         {
             _tempoRestante = 0;
             _potencia = 0;
             _estaAquecendo = false;
             _estaPausado = false;
-            _status.Clear();
+            _caractere = ".";
+            _programaPreDefinido = false;
+
+            if (limparStatus) 
+                _status.Clear();
         }
         #endregion
     }
