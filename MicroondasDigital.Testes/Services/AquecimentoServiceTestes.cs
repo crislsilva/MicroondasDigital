@@ -10,12 +10,14 @@ namespace MicroondasDigital.Testes.Services
     {
         private AquecimentoService _service;
         private Mock<IProgramaAquecimentoService> _mockProgramaService;
+        private Mock<IProgramaCustomizadoService> _mockProgramaCustomizadoService;
 
         [SetUp]
         public void Setup()
         {
             _mockProgramaService = new Mock<IProgramaAquecimentoService>();
-            _service = new AquecimentoService(_mockProgramaService.Object);
+            _mockProgramaCustomizadoService = new Mock<IProgramaCustomizadoService>();
+            _service = new AquecimentoService(_mockProgramaService.Object, _mockProgramaCustomizadoService.Object);
         }
 
         #region Testes - Iniciar Aquecimento

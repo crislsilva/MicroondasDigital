@@ -1,0 +1,359 @@
+﻿@{
+    ViewBag.Title = "Micro-ondas Digital";
+}
+
+<div class="container">
+    <h1>Micro-ondas Digital</h1>
+    <div id="mensagem" class="alert" style="display:none;"></div>
+    <label>Tempo em segundos (1 a 120)</label>
+    <input id="tempo" />
+    <br />
+    <label>Potência (1 a 10)</label>
+    <input id="potencia" />
+
+    <div class="teclado">
+        <button onclick="digitar(1)">1</button>
+        <button onclick="digitar(2)">2</button>
+        <button onclick="digitar(3)">3</button>
+
+        <button onclick="digitar(4)">4</button>
+        <button onclick="digitar(5)">5</button>
+        <button onclick="digitar(6)">6</button>
+
+        <button onclick="digitar(7)">7</button>
+        <button onclick="digitar(8)">8</button>
+        <button onclick="digitar(9)">9</button>
+
+        <button onclick="limpar()">Limpar</button>
+        <button onclick="digitar(0)">0</button>
+        <button onclick="backspace()">←</button>
+    </div>
+
+    @*combo para listar os programas pré-definidos*@
+    <div class="select-container">
+        <label for="programas">Programas pré-definidos</label>
+
+        <select id="programas" onchange="selecionarPrograma()">
+            <option value="">Selecione um programa</option>
+        </select>
+    </div>
+
+    <div id="cardInstrucoes" class="card-instrucoes hidden">
+        <div class="card-header">
+            <span>Instruções do Programa</span>
+        </div>
+
+        <div class="card-body">
+            <p id="textoInstrucoes"></p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button onclick="iniciarContinuar()">Iniciar</button>
+        <button onclick="pausarCancelar()">Pausar/Cancelar</button>
+    </div>
+    <h2 id="tempoDisplay"></h2>
+    <div id="display" class="display"></div>
+</div>
+
+<script>
+    const api_base = "https://localhost:44301";
+
+    let tempo = "",
+        potencia = "",
+        status = "",
+        tempoFormatado = "",
+        interval = null,
+        emExecucao = false,
+        pausado = false,
+        campoAtivo = "tempo";
+
+    const inputTempo = document.getElementById("tempo");
+    const inputPotencia = document.getElementById("potencia");
+    const cardInstrucoes = document.getElementById("cardInstrucoes");
+    const textoInstrucoes = document.getElementById("textoInstrucoes");
+
+    inputTempo.addEventListener("focus", () => {
+        campoAtivo = "tempo";
+        atualizarBorda();
+    });
+
+    inputPotencia.addEventListener("focus", () => {
+        campoAtivo = "potencia";
+        atualizarBorda();
+    });
+
+    function atualizarBorda() {
+        inputTempo.classList.remove("ativo");
+        inputPotencia.classList.remove("ativo");
+
+        if (campoAtivo === "tempo") inputTempo.classList.add("ativo");
+        if (campoAtivo === "potencia") inputPotencia.classList.add("ativo");
+    }
+
+    function mostrarMensagem(msg, tipo) {
+        const el = document.getElementById("mensagem");
+        el.innerText = msg;
+        el.style.display = "block";
+        el.className = "alert " + (tipo === "sucesso" ? "alert-success" : "alert-danger");
+
+        setTimeout(() => {
+            el.style.display = "none";
+        }, 3000);
+    }
+
+    function digitar(numero) {
+        if (campoAtivo === "tempo" && !inputTempo.disabled) {
+            if (inputTempo.value.length >= 3) return;
+            inputTempo.value += numero;
+        }
+
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) {
+            if (inputPotencia.value.length >= 2) return;
+            inputPotencia.value += numero;
+        }
+    }
+    function limpar() {
+        if (campoAtivo === "tempo" && !inputTempo.disabled) inputTempo.value = "";
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) inputPotencia.value = "";
+    }
+
+    function backspace() {
+        if (campoAtivo === "tempo" && !inputPotencia.disabled) {
+            inputTempo.value = inputTempo.value.slice(0, -1);
+        }
+        if (campoAtivo === "potencia" && !inputPotencia.disabled) {
+            inputPotencia.value = inputPotencia.value.slice(0, -1);
+        }
+    }
+
+    function iniciarContinuar() {
+        if (!emExecucao || (emExecucao && !pausado)) {
+            iniciar();
+        } else {
+            continuar();
+        }
+    }
+
+    async function iniciar() {
+        try {
+            tempo = inputTempo.value;
+            potencia = inputPotencia.value;
+
+            if (tempo) {
+                if (isNaN(parseInt(tempo))) {
+                    mostrarMensagem("Informe somente números no campo tempo", "alerta");
+                    return;
+                }
+            }
+            if (potencia) {
+                if (isNaN(parseInt(potencia))) {
+                    mostrarMensagem("Informe somente números no campo potência", "alerta");
+                    return;
+                }
+                if (potencia < 1 || potencia > 10) {
+                    mostrarMensagem("A potência deve estar entre 1 e 10", "alerta");
+                    return;
+                }
+            }
+            const res = await fetch(`${api_base}/api/microondas/iniciar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tempo: tempo ? parseInt(tempo) : null, potencia: potencia ? parseInt(potencia) : null })
+            });
+
+            if (!res.ok) {
+                const erro = await res.json();
+                mostrarMensagem(erro.Message || erro, "erro");
+                return;
+            }
+
+            if (!emExecucao) {
+                if (!tempo) inputTempo.value = "30";
+                if (!potencia) inputPotencia.value = "10";
+
+                iniciarProcesso();
+            }
+            else {
+                if (!inputTempo.disabled) inputTempo.value = (parseInt(inputTempo.value) + 30).toString();
+            }
+            emExecucao = true;
+            pausado = false;
+        }
+        catch
+        {
+            mostrarMensagem("Erro inesperado", "erro");
+        }
+    }
+
+    async function pausarCancelar() {
+        if (!emExecucao) {
+            inputTempo.value = "";
+            inputPotencia.value = "";
+            return;
+        }
+        const res = await fetch(`${api_base}/api/microondas/pausar-cancelar`, { method: "POST" });
+        const data = await res.json();
+
+        pausado = data?.resultado === "pausado";
+
+        if (data?.resultado === "cancelado") {
+            pararProcesso();
+
+            document.getElementById("display").innerText = "";
+            document.getElementById("tempoDisplay").innerText = "";
+            limparStatusCronometro();
+        }
+    }
+
+    async function continuar() {
+        await fetch(`${api_base}/api/microondas/continuar`, { method: "POST" });
+        pausado = false;
+    }
+
+    function iniciarProcesso() {
+        //bloquear select para não permitir selecionar outro programa enquanto está em aquecimento
+        document.getElementById("programas").setAttribute("disabled", "disabled");
+
+        if (interval) return;
+
+        interval = setInterval(atualizarStatus, 1000);
+    }
+
+    function pararProcesso() {
+        clearInterval(interval);
+        interval = null;
+        emExecucao = false;
+        pausado = false;
+
+        resetarProgramaSelecionado();
+
+        inputTempo.focus();
+    }
+
+    async function atualizarStatus() {
+        try {
+            const res = await fetch(`${api_base}/api/microondas/status`);
+            const data = await res.json();
+
+            document.getElementById("display").innerText = data.status;
+            document.getElementById("tempoDisplay").innerText = data.tempo;
+
+            if (data.status.includes("concluído") || data.status.length == 0) pararProcesso();
+        }
+        catch
+        {
+            pararProcesso();
+        }
+    }
+
+    async function carregarProgramas() {
+        try {
+            const res = await fetch(`${api_base}/api/microondas/programas`);
+
+            if (!res.ok) {
+                mostrarMensagem("Erro ao carregar programas", "erro");
+                return;
+            }
+
+            const data = await res.json();
+            const select = document.getElementById("programas");
+            select.innerHTML = '<option value="">Selecione um programa</option>';
+
+            // Pré-definidos
+            data.preDefinidos.forEach(p => {
+                const opt = document.createElement("option");
+
+                opt.value = p.nome;
+                opt.text = p.nome;
+                opt.dataset.tipo = "pre";
+
+                select.appendChild(opt);
+            });
+
+            // Customizados        
+            data.customizados.forEach(p => {
+                const opt = document.createElement("option");
+                
+                opt.value = p.nome; 
+                opt.text = p.nome;
+                opt.dataset.tipo = "custom";
+                opt.style.fontStyle = "italic"; //diferenciar mostrando em itálico
+                
+                select.appendChild(opt);
+            });
+        } catch { 
+            mostrarMensagem("Erro ao carregar programas", "erro");
+        }
+    }
+
+    async function selecionarPrograma() {
+        limparStatusCronometro();
+
+        const nome = document.getElementById("programas").value;
+
+        try {
+            const res = await fetch(`${api_base}/api/microondas/selecionar-programa?nome=${nome}`, {
+                method: "POST",
+            });
+
+            if (!nome) {
+                resetarProgramaSelecionado();
+
+                return;
+            }
+
+            if (!res.ok) {
+                const erro = await res.json();
+                mostrarMensagem(erro.Message || erro, "erro");
+                return;
+            }
+
+            const data = await res.json();
+
+            inputTempo.value = data.Tempo.toString();
+            inputPotencia.value = data.Potencia.toString();
+            textoInstrucoes.innerText = data.Instrucoes;
+            cardInstrucoes.classList.remove("hidden");
+
+            //bloquear inputs para evitar alterações manuais
+            inputTempo.disabled = true;
+            inputPotencia.disabled = true;
+        }
+        catch
+        {
+            mostrarMensagem("Erro ao selecionar programa", "erro");
+        }
+    }
+
+    function resetarProgramaSelecionado() {
+        const select = document.getElementById("programas");
+
+        //Limpar seleção do combo
+        select.value = "";
+
+        //Habilitar seleção do combo novamente
+        select.removeAttribute("disabled");
+
+        //Limpar instruções
+        cardInstrucoes.classList.add("hidden");
+        textoInstrucoes.innerText = "";
+
+        //Limpar inputs
+        inputTempo.value = "";
+        inputPotencia.value = "";
+
+        //Habilitar inputs novamente
+        inputTempo.disabled = false;
+        inputPotencia.disabled = false;
+    }
+
+    function limparStatusCronometro() {
+        document.getElementById("display").innerText = "";
+        document.getElementById("tempoDisplay").innerText = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarProgramas();
+    });
+</script>

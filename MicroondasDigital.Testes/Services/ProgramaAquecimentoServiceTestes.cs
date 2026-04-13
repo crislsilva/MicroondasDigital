@@ -1,6 +1,6 @@
 using MicroondasDigital.Aplicacao.Services;
 using MicroondasDigital.Dominio.Entidades;
-using MicroondasDigital.Dominio.Interfaces;
+using MicroondasDigital.Dominio.Interfaces.Entidades;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -51,14 +51,16 @@ namespace MicroondasDigital.Testes.Services
         }
 
         [Test]
-        public void ObterPorNome_ComNomeInvalido_LancaException()
+        public void ObterPorNome_ComNomeInvalido_RetornaNulo()
         {
             // Arrange
             var nomeInvalido = "Programa Inexistente";
 
-            // Act & Assert
-            var exception = Assert.Throws<Exception>(() => _service.ObterPorNome(nomeInvalido));
-            Assert.That(exception.Message, Does.Contain($"Programa {nomeInvalido} não encontrado"));
+            // Act
+            var resultado = _service.ObterPorNome(nomeInvalido);
+
+            // Assert
+            Assert.IsNull(resultado);
         }
 
         [Test]

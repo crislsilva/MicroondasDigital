@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="Entidades\Aquecimento.cs" />
     <Compile Include="Entidades\ProgramaAquecimento.cs" />
-    <Compile Include="Interfaces\IProgramaAquecimento.cs" />
+    <Compile Include="Entidades\ProgramaCustomizado.cs" />
+    <Compile Include="Interfaces\Entidades\IProgramaAquecimento.cs" />
+    <Compile Include="Interfaces\Repositorios\IProgramaCustomizadoRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategies\CarneStrategy.cs" />
     <Compile Include="Strategies\FeijaoStrategy.cs" />

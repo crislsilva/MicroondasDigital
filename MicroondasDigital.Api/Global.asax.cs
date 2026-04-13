@@ -5,7 +5,11 @@ using MicroondasDigital.Api.InjecaoDependencia;
 using MicroondasDigital.Aplicacao.Interfaces;
 using MicroondasDigital.Aplicacao.Services;
 using MicroondasDigital.Dominio.Interfaces;
+using MicroondasDigital.Dominio.Interfaces.Entidades;
+using MicroondasDigital.Dominio.Interfaces.Repositorios;
 using MicroondasDigital.Dominio.Strategies;
+using MicroondasDigital.Infra.Data;
+using MicroondasDigital.Infra.Repositorios;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MicroondasDigital.Api
@@ -35,6 +39,11 @@ namespace MicroondasDigital.Api
             service.AddSingleton<IEnumerable<IProgramaAquecimento>>(strategies);
             service.AddSingleton<IProgramaAquecimentoService, ProgramaAquecimentoService>();
             service.AddTransient<Controllers.MicroondasDigitalController>();
+            service.AddTransient<Controllers.ProgramaController>();
+
+            service.AddScoped<MicroondasContext>();
+            service.AddScoped<IProgramaCustomizadoRepositorio, ProgramaCustomizadoRepositorio>();
+            service.AddScoped<IProgramaCustomizadoService, ProgramaCustomizadoService>();
 
             var provider = service.BuildServiceProvider();
             config.DependencyResolver = new ResolucaoDependencia(provider);

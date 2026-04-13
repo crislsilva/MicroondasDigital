@@ -1,7 +1,9 @@
-﻿using System.Text;
-using MicroondasDigital.Aplicacao.DTO;
+﻿using MicroondasDigital.Aplicacao.DTO;
 using MicroondasDigital.Aplicacao.Interfaces;
 using MicroondasDigital.Dominio.Entidades;
+using System;
+using System.Linq;
+using System.Text;
 
 namespace MicroondasDigital.Aplicacao.Services
 {
@@ -16,10 +18,12 @@ namespace MicroondasDigital.Aplicacao.Services
 
         private readonly StringBuilder _status = new StringBuilder();
         private readonly IProgramaAquecimentoService _programaAquecimentoService;
+        private readonly IProgramaCustomizadoService _programaCustomizadoService;
 
-        public AquecimentoService(IProgramaAquecimentoService programaAquecimentoService)
+        public AquecimentoService(IProgramaAquecimentoService programaAquecimentoService, IProgramaCustomizadoService programaCustomizadoService)
         {
             _programaAquecimentoService = programaAquecimentoService;
+            _programaCustomizadoService = programaCustomizadoService;
         }
 
         public AquecimentoService()
@@ -109,26 +113,59 @@ namespace MicroondasDigital.Aplicacao.Services
         {
             ResetarParametrosAquecimento(true);
 
-            if (string.IsNullOrEmpty(nome)) {
+            if (string.IsNullOrEmpty(nome))
+            {
                 return null;
             }
 
-            var programa = _programaAquecimentoService.ObterPorNome(nome);
+            ProgramaSelecionadoDto programaSelecionado = null;
 
-            _tempoRestante = programa.Tempo;
-            _potencia = programa.Potencia;
-            _programaPreDefinido = true;
-            _caractere = programa.CaractereAquecimento;
+            //Primeiro busca nos programas pré-definidos, 
+            var preDefinido = _programaAquecimentoService.ObterPorNome(nome);
 
-            return new ProgramaSelecionadoDto 
+            if (preDefinido != null)
             {
-                Nome = programa.Nome,
-                Tempo = programa.Tempo,
-                Potencia = programa.Potencia,                
-                Caractere = programa.CaractereAquecimento,
-                Instrucoes = programa.Instrucoes
-            };
+                programaSelecionado = new ProgramaSelecionadoDto
+                {
+                    Nome = preDefinido.Nome,
+                    Tempo = preDefinido.Tempo,
+                    Potencia = preDefinido.Potencia,
+                    Caractere = preDefinido.CaractereAquecimento,
+                    Instrucoes = preDefinido.Instrucoes
+                };
+            }
+
+            //Se não encontrou nos pré-definidos, busca nos programas customizados
+            if (programaSelecionado == null)
+            {
+                var customizado = _programaCustomizadoService.ObterPorNome(nome);
+
+                if (customizado != null)
+                {
+                    programaSelecionado = new ProgramaSelecionadoDto
+                    {
+                        Nome = customizado.Nome,
+                        Tempo = customizado.Tempo,
+                        Potencia = customizado.Potencia,
+                        Caractere = customizado.Caractere,
+                        Instrucoes = customizado.Instrucoes
+                    };
+                }
+            }
+ 
+            if (programaSelecionado != null)
+            {
+                _tempoRestante = programaSelecionado.Tempo;
+                _potencia = programaSelecionado.Potencia;
+                _programaPreDefinido = true;
+                _caractere = programaSelecionado.Caractere;
+                return programaSelecionado;
+            }
+
+            throw new Exception($"Programa {nome} não encontrado.");
         }
+
+
         #endregion
 
         #region Métodos Privados

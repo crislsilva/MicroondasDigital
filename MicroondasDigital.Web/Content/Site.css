@@ -13,13 +13,17 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+select {
+    max-width: 300px;
 }
 
-/*micro-ondas*/
+input {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
 .container {
     text-align: center;
     font-family: arial;
@@ -51,9 +55,17 @@ button {
     width: 400px;
     border-radius: 6px;
     font-weight: bold;
-    background-color: #f8d7da;
-    color: #721c24;
 }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .alert-success {
+        background-color: #3ae07d;
+        color: #117d3d;
+    }
 
 .teclado {
     display: grid;
@@ -111,6 +123,12 @@ button {
     display: none;
 }
 
+.select {
+    padding: 8px;
+    border-radius: 6px;
+    margin: 10px;
+}
+
 .select-container {
     margin: 15px auto;
     width: 300px;
@@ -135,6 +153,30 @@ button {
         cursor: pointer;
         transition: all 0.2s ease;
     }
+
+/* Alertas */
+.alert {
+    width: 600px;
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sucesso {
+    background: #d4edda;
+    color: #155724;
+}
+
+.erro {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.hidden {
+    display: none;
+}
 
 @keyframes fadeIn {
     from {

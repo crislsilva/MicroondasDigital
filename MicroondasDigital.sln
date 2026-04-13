@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Api", "Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Web", "MicroondasDigital.Web\MicroondasDigital.Web.csproj", "{1FCD6035-67D1-419C-90E2-65AE4435F93F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroondasDigital.Infra", "MicroondasDigital.Infra\MicroondasDigital.Infra.csproj", "{A050B180-AFE6-44CB-969B-27963B2FAD00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FCD6035-67D1-419C-90E2-65AE4435F93F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A050B180-AFE6-44CB-969B-27963B2FAD00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A050B180-AFE6-44CB-969B-27963B2FAD00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A050B180-AFE6-44CB-969B-27963B2FAD00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A050B180-AFE6-44CB-969B-27963B2FAD00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

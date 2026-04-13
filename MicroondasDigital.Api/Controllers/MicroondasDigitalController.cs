@@ -1,7 +1,8 @@
-﻿using System;
-using System.Web.Http;
-using MicroondasDigital.Api.DTO;
+﻿using MicroondasDigital.Api.DTO;
 using MicroondasDigital.Aplicacao.Interfaces;
+using System;
+using System.Linq;
+using System.Web.Http;
 
 namespace MicroondasDigital.Api.Controllers
 {
@@ -10,10 +11,16 @@ namespace MicroondasDigital.Api.Controllers
     {
         private readonly IAquecimentoService _aquecimentoService;
         private readonly IProgramaAquecimentoService _programaAquecimentoService;
-        public MicroondasDigitalController(IAquecimentoService aquecimentoService, IProgramaAquecimentoService programaAquecimentoService)
+        private readonly IProgramaCustomizadoService _customizadoService;
+
+        public MicroondasDigitalController(
+            IAquecimentoService aquecimentoService, 
+            IProgramaAquecimentoService programaAquecimentoService,
+            IProgramaCustomizadoService customizadoService)
         {
             _aquecimentoService = aquecimentoService;
             _programaAquecimentoService = programaAquecimentoService;
+            _customizadoService = customizadoService;
         }
 
         [HttpPost]
@@ -65,14 +72,6 @@ namespace MicroondasDigital.Api.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("programas")]
-        public IHttpActionResult ObterProgramas()
-        {
-            var programas = _programaAquecimentoService.ObterTodos();
-            return Ok(programas);
-        }
-
         [HttpPost]
         [Route("selecionar-programa")]
         public IHttpActionResult SelecionarPrograma([FromUri] string nome)
@@ -86,6 +85,30 @@ namespace MicroondasDigital.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet]
+        [Route("programas")]
+        public IHttpActionResult ObterTodosProgramas()
+        {
+            var preDefinidos = _programaAquecimentoService.ObterTodos();
+            var customizados = _customizadoService.ObterTodos();
+
+            return Ok(new
+            {
+                preDefinidos = preDefinidos.Select(p => new {
+                    nome = p.Nome,
+                    tempo = p.Tempo,
+                    potencia = p.Potencia,
+                    instrucoes = p.Instrucoes
+                }),
+                customizados = customizados.Select(p => new {
+                    nome = p.Nome,
+                    tempo = p.Tempo,
+                    potencia = p.Potencia,
+                    instrucoes = p.Instrucoes
+                })
+            });
         }
     }
 }

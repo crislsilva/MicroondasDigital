@@ -9,10 +9,6 @@ namespace MicroondasDigital.Dominio.Entidades
 
         public Aquecimento(int tempoSegundos, int potencia)
         {
-            //remover bloqueio de 120 segundos devido aos programas pré-definidos
-            //if (tempoSegundos < 1 || tempoSegundos > 120)
-            //    throw new ArgumentException("O tempo de aquecimento deve estar entre 1 e 120 segundos.");
-
             if (potencia < 1 || potencia > 10)
                 throw new ArgumentException("A potência deve estar entre 1 e 10.");
 

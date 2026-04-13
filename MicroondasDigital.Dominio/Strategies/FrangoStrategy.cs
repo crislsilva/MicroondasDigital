@@ -1,5 +1,5 @@
 ﻿using MicroondasDigital.Dominio.Entidades;
-using MicroondasDigital.Dominio.Interfaces;
+using MicroondasDigital.Dominio.Interfaces.Entidades;
 
 namespace MicroondasDigital.Dominio.Strategies
 {

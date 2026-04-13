@@ -1,5 +1,5 @@
 ﻿using MicroondasDigital.Dominio.Entidades;
-using MicroondasDigital.Dominio.Interfaces;
+using MicroondasDigital.Dominio.Interfaces.Entidades;
 
 namespace MicroondasDigital.Dominio.Strategies
 {
@@ -7,7 +7,6 @@ namespace MicroondasDigital.Dominio.Strategies
     {
         public ProgramaAquecimento ObterPrograma()
         {
-            // Implementação do método para retornar o programa de pipoca
             return new ProgramaAquecimento(
                 nome: "Pipoca",
                 alimento: "Pipoca (de micro-ondas)",
